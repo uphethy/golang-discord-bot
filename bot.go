@@ -19,7 +19,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	db, err := sql.Open("mysql", "root:622gresko@tcp(localhost:3306)/commands")
+	db, err := sql.Open("mysql", "root:622gresko#@tcp(localhost:3306)/commands")
 	if err != nil {
 		fmt.Println("database error")
 		log.Fatal(err)
@@ -180,9 +180,4 @@ func isAdmin(s *discordgo.Session, userID string, guildID string) (bool, error) 
 	}
 
 	return false, nil
-}
-
-type Command struct {
-	GuildID     string
-	CommandName string
 }
