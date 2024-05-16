@@ -61,6 +61,8 @@ func main() {
 				}
 				defer insert.Close()
 			}
+		} else if args[0] == "vhelp" {
+			s.ChannelMessageSend(m.ChannelID, "vcommand <new command> - add a new command\n<command> add <some content> - add a content to command\n<command> remove <content> - remove a content from command")
 		} else if len(args) == 1 && args[0] != "vcommand" { // zbase
 			query := fmt.Sprintf("SELECT content FROM commandContent WHERE guild_id = '%s' AND command = '%s' ORDER BY RAND() LIMIT 1", m.GuildID, args[0])
 			res, err := db.Query(query)
