@@ -35,13 +35,14 @@ func main() {
 		args := strings.Split(m.Content, " ")
 		if args[0] == "vcommand" {
 			if len(args) > 2 {
-				s.ChannelMessageSend(m.ChannelID, "The command must consist of one word")
+				s.MessageReactionAdd(m.ChannelID, m.ID, "❎")
+				s.ChannelMessageSend(m.ChannelID, "the command must consist of one word")
 			} else if len(args) > 1 && args[1] != "" {
 				commands.AddCommand(s, m, db, args)
 			}
 
 		} else if args[0] == "vhelp" {
-			s.ChannelMessageSend(m.ChannelID, "vcommand <new command> - add a new command\n<command> add <some content> - add a content to command\n<command> remove <content> - remove a content from command")
+			s.ChannelMessageSend(m.ChannelID, "```vcommand <new command> - add a new command\n<command> add <some content> - add a content to command\n<command> remove <content> - remove a content from command```")
 		} else if len(args) > 1 && args[1] == "add" && args[0] != "vcommand" && args[0] != "vhelp" {
 			if len(args) == 2 {
 				err := s.MessageReactionAdd(m.ChannelID, m.ID, "❎")
@@ -51,6 +52,16 @@ func main() {
 				s.ChannelMessageSend(m.ChannelID, "empty command")
 			} else {
 				commands.AddCommandContent(s, m, db, args)
+			}
+		} else if len(args) > 1 && args[1] == "remove" && args[0] != "vcommand" && args[0] != "vhelp" {
+			if len(args) == 2 {
+				err := s.MessageReactionAdd(m.ChannelID, m.ID, "❎")
+				if err != nil {
+					panic(err)
+				}
+				s.ChannelMessageSend(m.ChannelID, "nothing to remove")
+			} else {
+				commands.RemoveContent(s, m, db, args)
 			}
 		} else if len(args) >= 1 && args[0] != "vcommand" && args[0] != "vhelp" {
 			commands.SendRandomContent(s, m, db, args)

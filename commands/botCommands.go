@@ -3,6 +3,7 @@ package commands
 import (
 	"database/sql"
 	"fmt"
+	"strings"
 
 	"github.com/bwmarrin/discordgo"
 	_ "github.com/go-sql-driver/mysql"
@@ -31,7 +32,8 @@ func AddCommandContent(s *discordgo.Session, m *discordgo.MessageCreate, db *sql
 	if err != nil {
 		panic(err)
 	}
-	query := fmt.Sprintf("INSERT INTO `command_contents` (`command_ID`, `content`) VALUES ('%d', '%s')", id_command, args[2])
+	content := args[2:]
+	query := fmt.Sprintf("INSERT INTO `command_contents` (`command_ID`, `content`) VALUES ('%d', '%s')", id_command, strings.Join(content, " "))
 	insert, err := db.Query(query)
 	if err != nil {
 		panic(err)
@@ -56,4 +58,22 @@ func SendRandomContent(s *discordgo.Session, m *discordgo.MessageCreate, db *sql
 		return
 	}
 	s.ChannelMessageSend(m.ChannelID, content)
+}
+
+func RemoveContent(s *discordgo.Session, m *discordgo.MessageCreate, db *sql.DB, args []string) {
+	var id_command int64
+	err := db.QueryRow("SELECT id FROM commands WHERE guild_ID = '" + m.GuildID + "' AND command = '" + args[0] + "'").Scan(&id_command)
+	if err != nil {
+		return
+	}
+	query := fmt.Sprintf("DELETE FROM command_contents WHERE command_id = '%d' AND content = '%s'", id_command, strings.Join(args[2:], " "))
+	delete, err := db.Query(query)
+	if err != nil {
+		return
+	}
+	err1 := s.MessageReactionAdd(m.ChannelID, m.ID, "✅")
+	if err1 != nil {
+		panic(err1)
+	}
+	defer delete.Close()
 }
