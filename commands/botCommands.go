@@ -64,11 +64,13 @@ func RemoveContent(s *discordgo.Session, m *discordgo.MessageCreate, db *sql.DB,
 	var id_command int64
 	err := db.QueryRow("SELECT id FROM commands WHERE guild_ID = '" + m.GuildID + "' AND command = '" + args[0] + "'").Scan(&id_command)
 	if err != nil {
+		s.MessageReactionAdd(m.ChannelID, m.ID, "❎")
 		return
 	}
 	query := fmt.Sprintf("DELETE FROM command_contents WHERE command_id = '%d' AND content = '%s'", id_command, strings.Join(args[2:], " "))
 	delete, err := db.Query(query)
 	if err != nil {
+		s.MessageReactionAdd(m.ChannelID, m.ID, "❎")
 		return
 	}
 	err1 := s.MessageReactionAdd(m.ChannelID, m.ID, "✅")

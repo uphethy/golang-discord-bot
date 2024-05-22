@@ -56,7 +56,15 @@ func main() {
 				commands.AddCommandContent(s, m, db, args)
 			}
 		} else if len(args) > 1 && args[1] == "remove" && args[0] != "vcommand" && args[0] != "vhelp" {
-			commands.RemoveContent(s, m, db, args)
+			if len(args) == 2 {
+				err := s.MessageReactionAdd(m.ChannelID, m.ID, "❎")
+				if err != nil {
+					panic(err)
+				}
+				s.ChannelMessageSend(m.ChannelID, "nothing to remove")
+			} else {
+				commands.RemoveContent(s, m, db, args)
+			}
 		} else if len(args) >= 1 && args[0] != "vcommand" && args[0] != "vhelp" {
 			commands.SendRandomContent(s, m, db, args)
 		}
