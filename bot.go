@@ -33,12 +33,17 @@ func main() {
 	}
 	sess.AddHandler(func(s *discordgo.Session, m *discordgo.MessageCreate) {
 		args := strings.Split(m.Content, " ")
+
 		if m.Author.ID == s.State.User.ID {
 			return
 		}
+
+		if args[0] == "vstop" {
+			s.ChannelMessageSend(m.ChannelID, "ololololo")
+		}
 		if args[0] == "vcommand" {
 			if len(args) > 2 {
-				s.ChannelMessageSend(m.ChannelID, "The command must consist of one word")
+				s.ChannelMessageSend(m.ChannelID, "the command must consist of one word")
 			} else if len(args) > 1 && args[1] != "" {
 				commands.AddCommand(s, m, db, args)
 			}

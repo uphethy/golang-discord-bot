@@ -30,13 +30,15 @@ func AddCommandContent(s *discordgo.Session, m *discordgo.MessageCreate, db *sql
 	var id_command int64
 	err := db.QueryRow("SELECT id FROM commands WHERE guild_ID = '" + m.GuildID + "' AND command = '" + args[0] + "'").Scan(&id_command)
 	if err != nil {
-		panic(err)
+		s.MessageReactionAdd(m.ChannelID, m.ID, "❎")
+		return
 	}
 	content := args[2:]
 	query := fmt.Sprintf("INSERT INTO `command_contents` (`command_ID`, `content`) VALUES ('%d', '%s')", id_command, strings.Join(content, " "))
 	insert, err := db.Query(query)
 	if err != nil {
-		panic(err)
+		s.MessageReactionAdd(m.ChannelID, m.ID, "❎")
+		return
 	}
 	err1 := s.MessageReactionAdd(m.ChannelID, m.ID, "✅")
 	if err1 != nil {
