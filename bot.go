@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"fmt"
 	"golang-discord-bot/commands"
-	"golang-discord-bot/tokens" // top secret
 	"log"
 	"os"
 	"os/signal"
@@ -16,11 +15,14 @@ import (
 )
 
 func main() {
-	sess, err := discordgo.New(tokens.Token())
+	token := os.Getenv("BOT_TOKEN")
+	sql_connection := os.Getenv("SQL_CONNECTION")
+
+	sess, err := discordgo.New("Bot " + token)
 	if err != nil {
 		log.Fatal("bot token error")
 	}
-	db, err := sql.Open("mysql", tokens.SqlConnection())
+	db, err := sql.Open("mysql", sql_connection)
 	if err != nil {
 		fmt.Println("database error")
 		log.Fatal(err)
@@ -38,9 +40,6 @@ func main() {
 			return
 		}
 
-		if args[0] == "vstop" {
-			s.ChannelMessageSend(m.ChannelID, "ololololo")
-		}
 		if args[0] == "vcommand" {
 			if len(args) > 2 {
 				s.ChannelMessageSend(m.ChannelID, "the command must consist of one word")
