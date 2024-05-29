@@ -44,7 +44,7 @@ func main() {
 			if len(args) > 2 {
 				s.ChannelMessageSend(m.ChannelID, "the command must consist of one word")
 			} else if len(args) > 1 && args[1] != "" {
-				commands.AddCommand(s, m, db, args)
+				go commands.AddCommand(s, m, db, args)
 			}
 
 		} else if args[0] == "vhelp" {
@@ -57,7 +57,7 @@ func main() {
 				}
 				s.ChannelMessageSend(m.ChannelID, "empty command")
 			} else {
-				commands.AddCommandContent(s, m, db, args)
+				go commands.AddCommandContent(s, m, db, args)
 			}
 		} else if len(args) > 1 && args[1] == "remove" && args[0] != "vcommand" && args[0] != "vhelp" {
 			if len(args) == 2 {
@@ -67,10 +67,10 @@ func main() {
 				}
 				s.ChannelMessageSend(m.ChannelID, "nothing to remove")
 			} else {
-				commands.RemoveContent(s, m, db, args)
+				go commands.RemoveContent(s, m, db, args)
 			}
 		} else if len(args) >= 1 && args[0] != "vcommand" && args[0] != "vhelp" {
-			commands.SendRandomContent(s, m, db, args)
+			go commands.SendRandomContent(s, m, db, args)
 		}
 	})
 
