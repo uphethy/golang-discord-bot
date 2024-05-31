@@ -7,6 +7,7 @@ import (
 	"log"
 	"os"
 	"os/signal"
+	"strconv"
 	"strings"
 	"syscall"
 
@@ -68,6 +69,15 @@ func main() {
 				s.ChannelMessageSend(m.ChannelID, "nothing to remove")
 			} else {
 				go commands.RemoveContent(s, m, db, args)
+			}
+		} else if args[0] == "vfor" && len(args) == 3 {
+			count, err := strconv.Atoi(args[2])
+			if err != nil || count > 10 {
+				s.MessageReactionAdd(m.ChannelID, m.ID, "❎")
+				return
+			}
+			for i := 0; i < count; i++ {
+				commands.SendRandomContentFor(s, m, db, args)
 			}
 		} else if len(args) >= 1 && args[0] != "vcommand" && args[0] != "vhelp" {
 			go commands.SendRandomContent(s, m, db, args)

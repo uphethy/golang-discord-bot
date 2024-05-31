@@ -81,3 +81,18 @@ func RemoveContent(s *discordgo.Session, m *discordgo.MessageCreate, db *sql.DB,
 	}
 	defer delete.Close()
 }
+
+func SendRandomContentFor(s *discordgo.Session, m *discordgo.MessageCreate, db *sql.DB, args []string) {
+	var id_command int64
+	err := db.QueryRow("SELECT id FROM commands WHERE guild_ID = '" + m.GuildID + "' AND command = '" + args[1] + "'").Scan(&id_command)
+	if err != nil {
+		return
+	}
+	var content string
+	query := fmt.Sprintf("SELECT content FROM command_contents WHERE command_id = '%d' ORDER BY RAND() LIMIT 1", id_command)
+	err = db.QueryRow(query).Scan(&content)
+	if err != nil {
+		return
+	}
+	s.ChannelMessageSend(m.ChannelID, content)
+}
