@@ -45,7 +45,7 @@ func main() {
 			if len(args) > 2 {
 				s.ChannelMessageSend(m.ChannelID, "the command must consist of one word")
 			} else if len(args) > 1 && args[1] != "" {
-				go commands.AddCommand(s, m, db, args)
+				go commands.AddCommand(s, m, db, args[1])
 			}
 
 		} else if args[0] == "vhelp" {
@@ -77,10 +77,10 @@ func main() {
 				return
 			}
 			for i := 0; i < count; i++ {
-				commands.SendRandomContentFor(s, m, db, args)
+				commands.SendRandomContent(s, m, db, args[1])
 			}
 		} else if len(args) >= 1 && args[0] != "vcommand" && args[0] != "vhelp" {
-			go commands.SendRandomContent(s, m, db, args)
+			go commands.SendRandomContent(s, m, db, args[0])
 		}
 	})
 
