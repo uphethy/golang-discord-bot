@@ -1,4 +1,4 @@
-vcommand \<command> \n
-\<command> add \<content> \n
-\<command> remove \<content> \n
+vcommand \<command>  
+\<command> add \<content>  
+\<command> remove \<content>  
 vfor \<command> \<number from 1 to 10>
